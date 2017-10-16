@@ -21,6 +21,7 @@ const source       = require('vinyl-source-stream');
 const uglify       = require('gulp-uglify');
 const zip          = require('gulp-zip');
 const html2js      = require('html2js-browserify');
+const server       = require('gulp-server-livereload');
 
 const app          = './app/';
 const dist         = './dist/';
@@ -395,6 +396,8 @@ gulp.task('bump',          function() { return bumpFunc( 'patch' ) });
 gulp.task('bump-patch',    function() { return bumpFunc( 'patch' ) });
 gulp.task('bump-minor',    function() { return bumpFunc( 'minor' ) });
 
+gulp.task('webserver', function() { gulp.src('dist') .pipe(server({ livereload: true, open: true })); });
+
 gulp.task('archive',       function() { return archive() });
 
 gulp.task('prep',   function(cb) { runSequence('js-production', 'html', 'styles', 'copy', cb); });
@@ -411,4 +414,4 @@ gulp.task('watchProd', ['watchJSProd', 'watchLess', 'watchPAGES', 'watchTPL', 'w
 gulp.task('build', ['js', 'html', 'styles', 'copy']);
 gulp.task('build-debug', ['js-debug', 'html', 'styles', 'watchJSDebug', 'watchLess', 'watchPAGES', 'watchTPL', 'watchCX'])
 
-gulp.task('default', ['build', 'watch']);
+gulp.task('default', ['build', 'watch', 'webserver']);
